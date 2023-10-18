@@ -7,6 +7,9 @@ import os
 from dotenv import find_dotenv, load_dotenv
 from langchain.utilities import PythonREPL
 from langchain.tools import DuckDuckGoSearchRun
+from langchain.agents import Tool
+
+
 # with open("API_KEY", "r") as f:
 #     openai.api_key = f.read().strip()
 MODEL_ENGINE = "text-davinci-002"
@@ -16,11 +19,12 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 question = "Who won today's cwc match"
 
+llm = OpenAI(temperature=0.5)
 
 def ask_wiki(question):
     wiki = WikipediaAPIWrapper()
 
-    llm = OpenAI(temperature=0.5)
+
     result = wiki.run(question)
     template = """
     Please write a concise and to the point summary, make it easy to understand, include all important points from the following text:
@@ -43,7 +47,7 @@ def ask_REPL(question):
 def ask_web(question):
     search = DuckDuckGoSearchRun()
     result = search.run(question)
-    llm = OpenAI(temperature=0.5)
+
     template = """
     Please write a concise and to the point summary, easy to understand, include all important points from the following text:
     {result}
@@ -59,7 +63,10 @@ def ask_web(question):
 print(ask_web(question))
 
 
-def generate_answer(question):
+
+
+
+def ask_openai(question):
     prompt = f"Question: {question}\n" "Answer:"
     completions = openai.Completion.create(
         engine=MODEL_ENGINE,
@@ -72,3 +79,12 @@ def generate_answer(question):
     message = completions.choices[0].text
     answer = message.strip().split("\nAnswer:")[-1].strip()
     return answer
+
+
+tools = [
+    Tool(
+        name = "wikipedia",
+        func= ask_wiki,
+        description="Useful for when you need to look up a topic, country or person on wikipedia"
+    )
+]
