@@ -85,6 +85,29 @@ tools = [
     Tool(
         name = "wikipedia",
         func= ask_wiki,
-        description="Useful for when you need to look up a topic, country or person on wikipedia"
+        description=" Useful when you need factual information about topics, concepts, events and people. on wikipedia"
     )
 ]
+
+repl_tool = Tool(
+    name='Python REPL',
+    func= ask_REPL,
+    description="useful for when you need to use python to answer a question. You should input python code"
+    )
+
+duckduckgo_tool = Tool(
+    name='Web Search',
+    func= ask_web,
+    description="Useful for when you need to do a search on the internet to find information that another tool can't find, or when you need up-to-date factual information that goes beyond your existing knowledge. be specific with your input."
+)
+
+openai_tool = Tool(
+    name="openai search",
+    func= ask_openai,
+    description='Useful when you need accurate and insightful answers to complex questions that go beyond factual information.'
+)
+
+tools.append(duckduckgo_tool)
+tools.append(repl_tool)
+tools.append(openai_tool)
+
