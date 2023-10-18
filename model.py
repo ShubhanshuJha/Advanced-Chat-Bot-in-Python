@@ -8,7 +8,7 @@ from dotenv import find_dotenv, load_dotenv
 from langchain.utilities import PythonREPL
 from langchain.tools import DuckDuckGoSearchRun
 from langchain.agents import Tool
-
+from langchain.agents import initialize_agent
 
 # with open("API_KEY", "r") as f:
 #     openai.api_key = f.read().strip()
@@ -17,7 +17,7 @@ MODEL_ENGINE = "text-davinci-002"
 load_dotenv(find_dotenv())
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-question = "Who won today's cwc match"
+question = "Who won the fight between Logan Paul and Dillon Danis And How?"
 
 llm = OpenAI(temperature=0.5)
 
@@ -52,6 +52,7 @@ def ask_web(question):
     Please write a concise and to the point summary, easy to understand, include all important points from the following text:
     {result}
     Write only those points which are related to the {question}
+    Do NOT write unrelated points
 """
     prompt = PromptTemplate(input_variables=["result","question"], template=template)
     summary_prompt = prompt.format(result=result,question=question)
@@ -60,7 +61,7 @@ def ask_web(question):
     return summary
 
 
-print(ask_web(question))
+# print(ask_web(question))
 
 
 
@@ -111,3 +112,13 @@ tools.append(duckduckgo_tool)
 tools.append(repl_tool)
 tools.append(openai_tool)
 
+zero_shot_agent = initialize_agent(
+    agent="zero-shot-react-description",
+    tools=tools,
+    llm=llm,
+    verbose=True,
+    max_iterations=3,
+)
+
+
+answer = zero_shot_agent.run(question)
