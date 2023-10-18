@@ -19,7 +19,7 @@ def interact(username: str) -> bool:
         return False
     if 'my name' in question.lower():
         question = 'My name is ' + username + '.' + question
-    answer = model.generate_answer(question)
+    answer = model.askme(question)
     print("Answer:", answer)
     speech.say(answer)
     return True
@@ -34,7 +34,7 @@ def talk(username: str) -> bool:
         return False
     if 'my name' in question.lower():
         question = 'My name is ' + username + '.' + question
-    answer = model.generate_answer(question)
+    answer = model.askme(question)
     print("Answer:", answer)
     speech.say(answer)
     return True
