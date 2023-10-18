@@ -5,7 +5,7 @@ from langchain import OpenAI
 from langchain import PromptTemplate
 import os 
 from dotenv import find_dotenv, load_dotenv
-
+from langchain.utilities import PythonREPL
 # with open("API_KEY", "r") as f:
 #     openai.api_key = f.read().strip()
 MODEL_ENGINE = "text-davinci-002"
@@ -13,10 +13,10 @@ MODEL_ENGINE = "text-davinci-002"
 load_dotenv(find_dotenv())
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-question = "who is naruto"
+question = print('HEllo langchain')
 
 
-def wiki_answer(question):
+def ask_wiki(question):
     wiki = WikipediaAPIWrapper()
 
     llm = OpenAI(temperature=0.5)
@@ -33,7 +33,12 @@ def wiki_answer(question):
     return summary
 
 
-print(wiki_answer(question))
+def ask_REPL(question):
+    python_repl = PythonREPL()
+    result = python_repl.run(question)
+
+
+print(ask_REPL(question))
 
 
 def generate_answer(question):
