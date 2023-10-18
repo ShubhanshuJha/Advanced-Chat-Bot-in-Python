@@ -6,6 +6,7 @@ from langchain import PromptTemplate
 import os 
 from dotenv import find_dotenv, load_dotenv
 from langchain.utilities import PythonREPL
+from langchain.tools import DuckDuckGoSearchRun
 # with open("API_KEY", "r") as f:
 #     openai.api_key = f.read().strip()
 MODEL_ENGINE = "text-davinci-002"
@@ -13,7 +14,7 @@ MODEL_ENGINE = "text-davinci-002"
 load_dotenv(find_dotenv())
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-question = print('HEllo langchain')
+question = "Who won today's cwc match"
 
 
 def ask_wiki(question):
@@ -36,9 +37,26 @@ def ask_wiki(question):
 def ask_REPL(question):
     python_repl = PythonREPL()
     result = python_repl.run(question)
+    return result
 
 
-print(ask_REPL(question))
+def ask_web(question):
+    search = DuckDuckGoSearchRun()
+    result = search.run(question)
+    llm = OpenAI(temperature=0.5)
+    template = """
+    Please write a concise and to the point summary, easy to understand, include all important points from the following text:
+    {result}
+    Write only those points which are related to the {question}
+"""
+    prompt = PromptTemplate(input_variables=["result","question"], template=template)
+    summary_prompt = prompt.format(result=result,question=question)
+    summary = llm(summary_prompt)
+
+    return summary
+
+
+print(ask_web(question))
 
 
 def generate_answer(question):
